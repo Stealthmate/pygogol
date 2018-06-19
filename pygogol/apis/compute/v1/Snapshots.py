@@ -1,0 +1,43 @@
+from pygogol.core import Request
+
+from Defs import baseUrl
+
+def delete(project=None, snapshot=None, requestId=None):
+    url = baseUrl + "{project}/global/snapshots/{snapshot}"
+    method = "DELETE"
+    return Request(
+        method, 
+        url.format(['project', 'snapshot']) + "?" + "&".join(),
+        {},
+        jsonDumps()
+    )
+
+def get(project=None, snapshot=None):
+    url = baseUrl + "{project}/global/snapshots/{snapshot}"
+    method = "GET"
+    return Request(
+        method, 
+        url.format(['project', 'snapshot']) + "?" + "&".join(),
+        {},
+        jsonDumps()
+    )
+
+def list(project=None, filter=None, maxResults=None, orderBy=None, pageToken=None):
+    url = baseUrl + "{project}/global/snapshots"
+    method = "GET"
+    return Request(
+        method, 
+        url.format(['project']) + "?" + "&".join(),
+        {},
+        jsonDumps()
+    )
+
+def setLabels(project=None, resource=None):
+    url = baseUrl + "{project}/global/snapshots/{resource}/setLabels"
+    method = "POST"
+    return Request(
+        method, 
+        url.format(['project', 'resource']) + "?" + "&".join(),
+        {},
+        jsonDumps()
+    )
