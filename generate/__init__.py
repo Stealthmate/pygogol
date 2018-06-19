@@ -78,8 +78,11 @@ def genModule(path, name, js):
             res = genSDK(rk, rv)
             with open(str(path) + "\\{}.py".format(rk.capitalize()), mode="w") as fres:
                 fres.write(res)
+            with open(str(path) + "\\__init__.py", mode="w") as finit:
+                finit.write("# empty")
 
 def generate():
+    print("GENERATING")
     sdks = glob(PACKAGE_ROOT + "google-api-go-client/**/*-api.json", recursive=True)
     for s in sdks:
         p = path.normpath(s).split(sep)[1:]

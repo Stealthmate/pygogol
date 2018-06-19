@@ -1,4 +1,5 @@
 from setuptools import setup
+import setuptools as setuptools
 
 from generate import generate
 
@@ -11,7 +12,7 @@ setup(name='pygogol',
       author='Stealthmate',
       author_email='stealthmate.dev@gmail.com',
       license='MIT',
-      packages=['pygogol'],
+      packages=setuptools.PEP420PackageFinder.find(),
       install_requires=[
           'google-auth',
       ],
