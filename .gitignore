@@ -3,3 +3,4 @@ gen/**
 pygogol.egg/**
 pygogol.egg-info/**
 google-api-go-client/**
+pygogol/apis/**
