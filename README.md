@@ -6,6 +6,8 @@ I hacked this in an afternoon, and it is still very very very rough. Feel free t
 ## Usage
 
 ```
+from pygogol.core import GoogleAPI
+from pygogol.apis.drive.v3 import Files
 credentials = service_account.Credentials.from_service_account_file('credentials.json', scopes=['https://www.googleapis.com/auth/drive'])
 gapi = GoogleAPI(creds)
 req = Files.copy("myFileId")
