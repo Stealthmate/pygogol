@@ -2,3 +2,4 @@ gen/**
 **/__pycache__/**
 pygogol.egg/**
 pygogol.egg-info/**
+google-api-go-client/**
