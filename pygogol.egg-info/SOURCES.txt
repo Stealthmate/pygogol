@@ -1,6 +1,0 @@
-pygogol/__init__.py
-pygogol.egg-info/PKG-INFO
-pygogol.egg-info/SOURCES.txt
-pygogol.egg-info/dependency_links.txt
-pygogol.egg-info/not-zip-safe
-pygogol.egg-info/top_level.txt
