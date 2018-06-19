@@ -4,10 +4,11 @@ def {resourceName}({params}):
     queryParams = {{
         {queryParams}
     }}
-    queryParams = dict( filter(lambda x: queryParams[x] is not None, queryParams.keys()) )
+    queryParams = {{k: quote(v) for k, v in queryParams.items() if v is not None}}
+    query = "?" + "&".join(map(lambda x: "{{}}={{}}".format(x, queryParams[x]), queryParams.keys()))
     return Request(
         method, 
-        url.format({pathParams}) + "?" + "&".join(map(lambda x: "{{}}={{}}".format(x, queryParams[x]), queryParams.keys())),
+        url.format({pathParams}) + (query if len(query) > 1 else ""),
         {{}},
-        dumps({bodyParam})
+        {bodyParam}
     )

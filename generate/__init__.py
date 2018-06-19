@@ -29,7 +29,7 @@ def genResourceMethod(i):
     name, js = i
     pathParams = []
     queryParams = []
-    bodyParam = "\"\""
+    bodyParam = None
     if "parameters" in js:
         params = js["parameters"].keys()
         pathParams = list(filter(lambda x: js["parameters"][x]["location"] == "path", params))
@@ -44,12 +44,12 @@ def genResourceMethod(i):
     defNone = lambda x: "{}=None".format(x)
     tt = TEMPLATE.RESOURCE.format(
         resourceName=name, 
-        params=", ".join(pathParams + (["{0}=None".format(bodyParam)] if bodyParam != "\"\"" else []) + list(map(defNone, queryParams))), 
+        params=", ".join(pathParams + (["{0}=None".format(bodyParam)] if bodyParam is not None else []) + list(map(defNone, queryParams))), 
         resourceUrl=js["path"], 
         resourceMethod=js["httpMethod"], 
         pathParams=", ".join(map(lambda x: "{0}={0}".format(x), pathParams)), 
         queryParams="\n\t\t, ".join(map(lambda x: "\"{0}\": {0}".format(x), queryParams)),
-        bodyParam=bodyParam)
+        bodyParam="dumps({})".format(bodyParam) if bodyParam else None)
     return tt
 
 def genSDK(name, js):
