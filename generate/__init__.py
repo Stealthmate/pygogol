@@ -72,7 +72,7 @@ def genModule(path, name, js):
                 "baseUrl": js["baseUrl"]
             })
             genModule(path_, rk, rv_)
-        else:
+        if "methods" in rv:
             with open(str(path) + "\\" + "Defs.py", mode="w") as fdefs:
                 fdefs.write(defs)
             res = genSDK(rk, rv)
