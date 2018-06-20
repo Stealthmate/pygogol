@@ -45,7 +45,7 @@ def genResourceMethod(i):
     tt = TEMPLATE.RESOURCE.format(
         resourceName=name, 
         params=", ".join(pathParams + (["{0}=None".format(bodyParam)] if bodyParam is not None else []) + list(map(defNone, queryParams))), 
-        resourceUrl=js["path"], 
+        resourceUrl=js["path"] or js["flatPath"], 
         resourceMethod=js["httpMethod"], 
         pathParams=", ".join(map(lambda x: "{0}={0}".format(x), pathParams)), 
         queryParams="\n\t\t, ".join(map(lambda x: "\"{0}\": {0}".format(x), queryParams)),
