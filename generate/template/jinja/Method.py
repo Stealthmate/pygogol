@@ -13,7 +13,7 @@ def {{methodName}}({% set params = pathParams + ([] if bodyParam is none else [b
     query = "?" + "&".join(map(lambda x: "{}={}".format(x, queryParams[x]), queryParams.keys())){% endraw %}
     return Request(
         method,
-        url.format({{pathParams|join(", ")}}) + (query if len(query) > 1 else ""),
+        url.format({% for p in pathParams %}{{p}}={{p}}{% if not loop.last %}, {% endif %}{% endfor %}) + (query if len(query) > 1 else ""),
         {{'{'}}{% if bodyParam is not none %}"content-type": "application/json"{% endif %}{{'}'}},
         {% if bodyParam is not none %}dumps({{bodyParam}}){% else %}None{% endif %}
     )

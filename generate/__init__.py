@@ -12,12 +12,16 @@ def genDefs(js):
     if "auth" in js and "oauth2" in js["auth"] and "scopes" in js["auth"]["oauth2"]:
         scopes = js["auth"]["oauth2"]["scopes"]
         scopes = list(map( lambda x: (x.split("/")[-1].upper().replace(".", "_").replace("-", "_"), x), scopes.keys()))
-        
-    return TEMPLATE.DEFS_JINJA.render(
+    schemas = {}
+    if "schemas" in js:
+        ss = js["schemas"]
+        schemas = {k: {"properties": [ x for x in v["properties"].keys()]} for k,v in ss.items() if "properties" in v and len(v["properties"]) > 0}
+    return (schemas, TEMPLATE.DEFS_JINJA.render(
         baseUrl = js["baseUrl"],
-        scopes=scopes)
+        scopes=scopes,
+        schemas=schemas))
 
-def genResourceMethod(name, js):
+def genResourceMethod(name, js, schemas):
     pathParams = []
     queryParams = []
     bodyParam = None
@@ -25,7 +29,7 @@ def genResourceMethod(name, js):
         params = js["parameters"].keys()
         pathParams = list(filter(lambda x: js["parameters"][x]["location"] == "path", params))
         queryParams = list(filter(lambda x: js["parameters"][x]["location"] == "query", params))
-    if "request" in js and "$ref" in js["request"]:
+    if "request" in js and "$ref" in js["request"] and js["request"]["$ref"] in schemas:
         bodyParam = js["request"]["$ref"]
     return TEMPLATE.METHOD_JINJA.render(
         methodName=name, 
@@ -35,20 +39,22 @@ def genResourceMethod(name, js):
         bodyParam=bodyParam,
         methodUrl=js["path"] or js["flatPath"])
 
-def genResource(apiname, name, js):
+def genResource(apiname, name, js, schemas):
     result = {}
     if "resources" in js:
-        result = { k: genResource(apiname, k, js["resources"][k]) for k in js["resources"].keys() }
+        result = { k: genResource(apiname, k, js["resources"][k], schemas) for k in js["resources"].keys() }
     if "methods" in js:
         result["__generated"] = TEMPLATE.RESOURCE_JINJA.render(
             apiname=apiname,
-            methods=list(map(lambda x: genResourceMethod(x[0], x[1]), js["methods"].items()))
+            methods=list(map(lambda x: genResourceMethod(x[0], x[1], schemas), js["methods"].items()))
         )
     return result
 
 def genSDK(path, apiname, js):
-    res = genResource(apiname, apiname, js)
-    res["defs"] = genDefs(js)
+    (schemas, defs) = genDefs(js)
+    schemas = schemas
+    res = genResource(apiname, apiname, js, schemas)
+    res["defs"] = defs
     return res
 
 def generate():
