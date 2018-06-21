@@ -28,12 +28,12 @@ def genResourceMethod(name, js):
     if "request" in js and "$ref" in js["request"]:
         bodyParam = js["request"]["$ref"]
     return TEMPLATE.METHOD_JINJA.render(
-        resourceName=name, 
+        methodName=name, 
+        httpMethod=js["httpMethod"],
         pathParams=pathParams,
         queryParams=queryParams,
-        bodyParam = bodyParam,
-        resourceUrl=js["path"] or js["flatPath"], 
-        resourceMethod=js["httpMethod"])
+        bodyParam=bodyParam,
+        methodUrl=js["path"] or js["flatPath"])
 
 def genResource(apiname, name, js):
     result = {}
@@ -62,7 +62,6 @@ def generate():
             with open(s, encoding="utf-8") as apidef:
                 js = load(apidef)
                 sdk = flatten(genSDK(sdkpath, apiname.replace("\\", ".").replace("-","_"), js))
-                saveFile("./log.txt", "\n\n".join(map(str, sdk)))
                 for f in sdk:
                     filepath = str(sdkpath).split(sep) + f[:-1]
                     filepath = [x for x in filepath if x != "__generated"]
