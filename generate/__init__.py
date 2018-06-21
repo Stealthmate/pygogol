@@ -5,6 +5,7 @@ from itertools import chain
 from os import path, sep
 from pathlib import Path
 import generate.template as TEMPLATE
+from jinja2 import Template
 
 PACKAGE_ROOT = "./"
 
@@ -34,22 +35,15 @@ def genResourceMethod(i):
         params = js["parameters"].keys()
         pathParams = list(filter(lambda x: js["parameters"][x]["location"] == "path", params))
         queryParams = list(filter(lambda x: js["parameters"][x]["location"] == "query", params))
-        fix = lambda x: "path_" + x.capitalize() if js["parameters"][x]["location"] == "path" else ("query_" + x)
-        params = list(map(fix, params))
-    else:
-        params = []
-    
     if "request" in js and "$ref" in js["request"]:
         bodyParam = js["request"]["$ref"].lower()
-    defNone = lambda x: "{}=None".format(x)
-    tt = TEMPLATE.RESOURCE.format(
+    tt = TEMPLATE.RESOURCE_JINJA.render(
         resourceName=name, 
-        params=", ".join(pathParams + (["{0}=None".format(bodyParam)] if bodyParam is not None else []) + list(map(defNone, queryParams))), 
+        pathParams=pathParams,
+        queryParams=queryParams,
+        bodyParam = bodyParam,
         resourceUrl=js["path"] or js["flatPath"], 
-        resourceMethod=js["httpMethod"], 
-        pathParams=", ".join(map(lambda x: "{0}={0}".format(x), pathParams)), 
-        queryParams="\n\t\t, ".join(map(lambda x: "\"{0}\": {0}".format(x), queryParams)),
-        bodyParam="dumps({})".format(bodyParam) if bodyParam else None)
+        resourceMethod=js["httpMethod"])
     return tt
 
 def genSDK(name, js):
