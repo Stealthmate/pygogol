@@ -1,6 +1,0 @@
-from pygogol.core import Request
-from json import dumps
-from urllib.parse import quote
-from .Defs import baseUrl
-
-{{resources|join("\n\n")}}
