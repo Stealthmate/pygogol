@@ -6,7 +6,6 @@ def loadTemplate(fn):
         asd = f.read()
     return asd
 
-SDK = loadTemplate("./generate/template/SDK.py")
-RESOURCE = loadTemplate("./generate/template/Resource.py")
-DEFS = loadTemplate("./generate/template/Defs.py")
 RESOURCE_JINJA = Template(loadTemplate("./generate/template/jinja/Resource.py"))
+METHOD_JINJA = Template(loadTemplate("./generate/template/jinja/Method.py"))
+DEFS_JINJA = Template(loadTemplate("./generate/template/jinja/Defs.py"))
